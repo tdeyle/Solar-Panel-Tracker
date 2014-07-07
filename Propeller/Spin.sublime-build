@@ -1,0 +1,13 @@
+{
+  "cmd": ["echo", "C:\\Users\\Theo\\Downloads\\bstc.exe ${file}"],
+  "shell": true,
+
+  "variants":
+  [
+    {
+      "name": "Run",
+      "cmd": ["echo", "C:\\Users\\Theo\\Downloads\\bstc.exe -p2 ${file}"],
+      "shell": true
+    }
+  ]
+}

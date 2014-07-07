@@ -3,19 +3,16 @@ CON
   _clkmode      = xtal1 + pll16x
   _clkfreq      = 80_000_000
 
-  ROLL_PIN = 2
-  PITCH_PIN = 3
-  YAW_PIN = 4
+  AZI_PIN = 8
+  ELE_PIN = 9
   RX_PIN = 24
   TX_PIN = 23
-  'CLK_PIN = 2
-  'DAT_PIN = 3
-  'LATCH = 4
   
 OBJ
 
   serial : "Parallax Serial Terminal"
   PST : "Parallax Serial Terminal"
+  ser: "Servo_Engine"
   
 VAR
 
@@ -25,8 +22,42 @@ VAR
   long full_roll, full_pitch, full_yaw
 
   long iRoll, iPitch, iYaw
+
+  long IMU_Stack[100]
+
+  long timeCounter
   
-PUB Main | ptr, idx
+PUB Main | ptr, idx, frequencyCounter
+
+  ser.SEREngineStart(AZI_PIN, ELE_PIN, 50)
+
+  ser.leftPulseLength(2_000 - frequencyCounter)
+  
+  cognew(Do_IMU, @IMU_Stack)
+
+  waitcnt(clkfreq * 10 + cnt)
+
+  timeCounter := ((clkfreq / 1_000) * 20)
+
+  repeat
+
+    repeat frequencyCounter from 0 to 1_000 step 10
+
+      ser.leftPulseLength(1_000 + frequencyCounter)
+
+      ser.rightPulseLength(2_000 - frequencyCounter)
+
+      waitcnt(timeCounter + cnt)
+
+    repeat frequencyCounter from 1_000 to 0 step 10
+
+      ser.leftPulseLength(1_000 + frequencyCounter)
+
+      ser.rightPulseLength(2_000 - frequencyCounter)
+
+      waitcnt(timeCounter + cnt)
+  
+PUB Do_IMU
 
   PST.start(115200)
   serial.startrxtx(RX_PIN,TX_PIN,0, 57600) '24 is RX, 23 is TX Arduino => 15 is rx, 14 is tx
