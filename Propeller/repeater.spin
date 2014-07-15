@@ -13,6 +13,9 @@ OBJ
   serial : "Parallax Serial Terminal"
   PST : "Parallax Serial Terminal"
   ser: "Servo_Engine"
+
+
+  
   
 VAR
 
@@ -28,6 +31,9 @@ VAR
   long timeCounter
   
 PUB Main | ptr, idx, frequencyCounter
+
+
+''Testing private
 
   ser.SEREngineStart(AZI_PIN, ELE_PIN, 50)
 
